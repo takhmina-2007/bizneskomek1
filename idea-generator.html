@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>💡 Бизнес-идея генераторы</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    .form-section {
+      margin-top: 2rem;
+    }
+    select, input {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+    }
+    .result {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-top: 2rem;
+    }
+    #downloadIdeasBtn {
+      display: none;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <button onclick="switchLanguage()">KZ / RU</button>
+
+  <h1>💡 Бизнес-идея генераторы</h1>
+
+  <div class="form-section">
+    <label>1. Сіздің бастапқы капиталыңыз:</label>
+    <select id="budget">
+      <option value="0">0 - 200 000 ₸</option>
+      <option value="1">200 000 - 1 000 000 ₸</option>
+      <option value="2">1 000 000 ₸ жоғары</option>
+    </select>
+
+    <label>2. Сізге жақын бағыт:</label>
+    <select id="interest">
+      <option value="online">Онлайн жұмыс</option>
+      <option value="manual">Қолмен жасайтын</option>
+      <option value="commerce">Сату/коммерция</option>
+      <option value="creative">Шығармашылық</option>
+    </select>
+
+    <label>3. Күніне қанша уақытыңыз бар?</label>
+    <select id="time">
+      <option value="1">1–2 сағат</option>
+      <option value="2">3–5 сағат</option>
+      <option value="3">Толық күн</option>
+    </select>
+
+    <button onclick="generateIdeas()">🚀 Идея алу</button>
+  </div>
+
+  <div class="result" id="ideaResult"></div>
+  <button id="downloadIdeasBtn" onclick="downloadIdeasPDF()">📥 PDF жүктеу</button>
+
+  <script src="script.js"></script>
+  <script>
+    function generateIdeas() {
+      const b = document.getElementById("budget").value;
+      const i = document.getElementById("interest").value;
+      const t = document.getElementById("time").value;
+
+      let ideas = [];
+
+      // 🔍 Негізгі логика жаңартылған
+      if (b === "0" && i === "online") {
+        ideas = ["SMM қызметі (Instagram)", "Онлайн курс жазу", "Контент жасау (видео, фото)", "Telegram-бот жасау"];
+      } else if (b === "0" && i === "manual") {
+        ideas = ["Қолдан жасалған бұйымдар (сабын, әшекей)", "Маникюр/қас коррекциясы үйде", "Асхана/тағам жеткізу"];
+      } else if (b === "1" && i === "commerce") {
+        ideas = ["Wildberries арқылы сату", "Kaspi дүкен ашу", "Киім бутигі (арендасыз) Instagram арқылы"];
+      } else if (b === "2" && i === "manual") {
+        ideas = ["Тігін цехы", "Сұлулық салоны", "Өндірістік кіші бизнес"];
+      } else if (b === "2" && i === "commerce") {
+        ideas = ["Мини-франшиза сатып алу", "Азық-түлік дүкені", "Кофехана"];
+      } else if (i === "creative") {
+        ideas = ["Мобилография (видео түсіру)", "Музыка сабағы", "Копирайтинг", "ТикТок/Narration voice", "Gumroad/Canva шаблон сату"];
+      } else if (b === "0" && t === "1") {
+        ideas = ["TikTok Affiliate табыс", "Ақылы Telegram арна", "Аудио подкаст жасау"];
+      } else {
+        ideas = ["Жеткізу қызметі", "Шаштараз", "Көлік жуу", "TikTok видео түсіру"];
+      }
+
+      let html = `<h2>🧠 Ұсынылатын идеялар:</h2><ul>`;
+      ideas.forEach((idea) => {
+        html += `<li>✅ ${idea}</li>`;
+      });
+      html += `</ul>`;
+
+      document.getElementById("ideaResult").innerHTML = html;
+      document.getElementById("downloadIdeasBtn").style.display = 'inline-block';
+    }
+
+    async function downloadIdeasPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const ideaElements = document.querySelectorAll("#ideaResult li");
+      let y = 10;
+
+      doc.setFontSize(14);
+      doc.text("Бизнес-идея тізімі", 10, y); y += 10;
+      doc.setFontSize(12);
+
+      ideaElements.forEach((li, index) => {
+        doc.text(`- ${li.textContent}`, 10, y);
+        y += 10;
+      });
+
+      doc.save("biznes-idea.pdf");
+    }
+  </script>
+</body>
+</html>

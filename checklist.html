@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>ТОО ашу чек-листі + Салық калькуляторы</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .checklist {
+      margin-top: 2rem;
+    }
+    .checklist-item {
+      margin-bottom: 0.8rem;
+    }
+    .calculator {
+      background: #fff;
+      padding: 1rem;
+      margin-top: 3rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .calculator input, .calculator select {
+      width: 100%;
+      margin-top: 0.3rem;
+      margin-bottom: 1rem;
+      padding: 0.4rem;
+    }
+    .result {
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <button onclick="switchLanguage()">KZ / RU</button>
+
+  <h1>✅ ТОО АШУ ЧЕК-ЛИСТІ</h1>
+  <div class="checklist">
+    <div class="checklist-item"><input type="checkbox"> ЭЦҚ алу</div>
+    <div class="checklist-item"><input type="checkbox"> eGov порталына кіру</div>
+    <div class="checklist-item"><input type="checkbox"> Жарғыны толтыру</div>
+    <div class="checklist-item"><input type="checkbox"> КЭК код таңдау</div>
+    <div class="checklist-item"><input type="checkbox"> Банк шоты ашу</div>
+    <div class="checklist-item"><input type="checkbox"> Салық органына тіркелу</div>
+    <div class="checklist-item"><input type="checkbox"> POS-терминал қосу</div>
+    <div class="checklist-item"><input type="checkbox"> Салық режимін таңдау</div>
+  </div>
+
+  <h2>📊 САЛЫҚ РЕЖИМІН ТАҢДАУ КАЛЬКУЛЯТОРЫ</h2>
+  <div class="calculator">
+    <label>Жұмысшылар саны:</label>
+    <input type="number" id="workers" placeholder="Мысалы: 3">
+
+    <label>Жылдық табыс (млн тг):</label>
+    <input type="number" id="income" placeholder="Мысалы: 10">
+
+    <label>Қызмет түрі:</label>
+    <select id="activity">
+      <option value="trade">Сауда</option>
+      <option value="services">Қызмет көрсету</option>
+      <option value="other">Басқа</option>
+    </select>
+
+    <button onclick="calculateTax()">Режимді анықтау</button>
+    <div class="result" id="taxResult"></div>
+  </div>
+
+  <script>
+    function switchLanguage() {
+      alert("Тіл ауыстыру функциясы кейін қосылады.");
+    }
+
+    function calculateTax() {
+      const workers = parseInt(document.getElementById('workers').value);
+      const income = parseFloat(document.getElementById('income').value);
+      const activity = document.getElementById('activity').value;
+      let result = '';
+
+      if (isNaN(workers) || isNaN(income)) {
+        result = 'Барлық деректерді дұрыс енгізіңіз';
+      } else if (workers === 0 && income < 14) {
+        result = '👉 Сізге ПАТЕНТ негізіндегі режим тиімді';
+      } else if (workers <= 10 && income < 70) {
+        result = '👉 Сізге ОҢАЙЛАТЫЛҒАН режим тиімді';
+      } else if (workers <= 30 && income < 120) {
+        result = '👉 Сізге ТІРКЕЛГЕН ШЕГЕРІМ режимі тиімді';
+      } else {
+        result = '👉 Жалпы белгіленген режим (ЖБТ) қажет';
+      }
+
+      document.getElementById('taxResult').innerText = result;
+    }
+  </script>
+</body>
+</html>

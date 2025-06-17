@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>🎓 Сертификат</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f2f7fa;
+    }
+    .container {
+      max-width: 750px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 10px;
+      border: 2px solid #3399cc;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    .checklist label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .form-input {
+      margin-top: 1rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    button {
+      background: #3399cc;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #287ba3;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center">🎓 Инструктажды аяқтау және сертификат</h1>
+  <div class="container">
+    <p>Барлық бөлімді оқып, танысқаныңызды төменде белгілеп шығыңыз:</p>
+    <div class="checklist">
+      <label><input type="checkbox"> I. Кіріспе</label>
+      <label><input type="checkbox"> II. ЖК мен ТОО</label>
+      <label><input type="checkbox"> III. ТОО ашу</label>
+      <label><input type="checkbox"> IV. Салық режимдері</label>
+      <label><input type="checkbox"> V. Есептілік</label>
+      <label><input type="checkbox"> VI. Электронды платформалар</label>
+      <label><input type="checkbox"> VII. Гранттар мен қолдау</label>
+      <label><input type="checkbox"> VIII. Қаржыландыру</label>
+      <label><input type="checkbox"> IX. HR және қызметкерлер</label>
+      <label><input type="checkbox"> X. Маркетинг және сату</label>
+      <label><input type="checkbox"> XI. Қиындықтар мен кеңестер</label>
+      <label><input type="checkbox"> XII. Бизнес жоспар</label>
+      <label><input type="checkbox"> XIII. Қосымша материалдар</label>
+    </div>
+
+    <div class="form-input">
+      <label>Аты-жөніңіз:</label>
+      <input type="text" id="fullName" placeholder="Мысалы: Айдана Ахметова">
+    </div>
+
+    <button onclick="generateCertificate()">📥 Сертификатты алу</button>
+  </div>
+
+  <script>
+    async function generateCertificate() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'landscape' });
+
+      const name = document.getElementById("fullName").value.trim();
+      const checkboxes = document.querySelectorAll("input[type='checkbox']");
+      const allChecked = [...checkboxes].every(cb => cb.checked);
+
+      if (!name) {
+        alert("Аты-жөніңізді енгізіңіз");
+        return;
+      }
+      if (!allChecked) {
+        alert("Барлық бөлімді белгілеп шығыңыз");
+        return;
+      }
+
+      const date = new Date().toLocaleDateString('kk-KZ');
+      const rand = Math.floor(1000 + Math.random() * 9000);
+      const certId = `SD-${new Date().toISOString().slice(0,10).replace(/-/g, '')}-${rand}`;
+      const certURL = `https://shobdamy.kz/cert?id=${certId}`;
+
+      // Дизайн элементтері
+      doc.setFillColor(240, 250, 255);
+      doc.rect(10, 10, 270, 170, 'F');
+      doc.setDrawColor(51, 153, 204);
+      doc.rect(10, 10, 270, 170);
+
+      doc.setFontSize(28);
+      doc.setTextColor(51, 102, 153);
+      doc.text("СЕРТИФИКАТ", 140, 40, null, null, "center");
+
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Бұл куәлік ${name} есімді қатысушыға беріледі`, 140, 60, null, null, "center");
+      doc.text("Ол SHOB DAMY платформасындағы кәсіпкерлік инструктажды сәтті аяқтады.", 140, 75, null, null, "center");
+      doc.text(`Күні: ${date}`, 140, 95, null, null, "center");
+      doc.text(`Сертификат ID: ${certId}`, 140, 110, null, null, "center");
+      doc.text("www.shobdamy.kz", 140, 125, null, null, "center");
+
+      // QR код қосу
+      const qr = qrcode(0, 'L');
+      qr.addData(certURL);
+      qr.make();
+      const qrDataUrl = qr.createDataURL();
+
+      const img = new Image();
+      img.src = qrDataUrl;
+      img.onload = function() {
+        doc.addImage(img, 'PNG', 235, 20, 30, 30);
+        doc.save("sertifikat.pdf");
+      };
+    }
+  </script>
+</body>
+</html>

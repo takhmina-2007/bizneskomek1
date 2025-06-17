@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title data-i18n="bplan_title">Бизнес-жоспар генераторы</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    .form-section {
+      margin-top: 2rem;
+    }
+    input, textarea {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+    }
+    #result {
+      margin-top: 2rem;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    #downloadBtn {
+      display: none;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <button onclick="switchLanguage()">KZ / RU</button>
+
+  <h1 data-i18n="bplan_title">🧾 Бизнес-жоспар генераторы</h1>
+
+  <div class="form-section">
+    <label>Кәсіп түрі:</label>
+    <input type="text" id="biz_type" placeholder="Мысалы: Кофехана">
+
+    <label>Бастапқы инвестиция (тг):</label>
+    <input type="number" id="investment">
+
+    <label>Ай сайынғы шығын (тг):</label>
+    <input type="number" id="cost">
+
+    <label>Ай сайынғы табыс (тг):</label>
+    <input type="number" id="income">
+
+    <label>Өнім / Қызмет сипаттамасы:</label>
+    <textarea id="description"></textarea>
+
+    <label>Сату арнасы:</label>
+    <input type="text" id="channel" placeholder="Instagram, сайт, базар т.б.">
+
+    <label>Негізгі тәуекелдер мен шешім жолдары:</label>
+    <textarea id="risk"></textarea>
+
+    <button onclick="generatePlan()">📝 Жоспарды құру</button>
+  </div>
+
+  <div id="result"></div>
+  <button id="downloadBtn" onclick="downloadPDF()">📥 PDF ретінде жүктеу</button>
+
+  <script src="script.js"></script>
+  <script>
+    function generatePlan() {
+      const biz = document.getElementById('biz_type').value;
+      const inv = document.getElementById('investment').value;
+      const cost = document.getElementById('cost').value;
+      const income = document.getElementById('income').value;
+      const desc = document.getElementById('description').value;
+      const chan = document.getElementById('channel').value;
+      const risk = document.getElementById('risk').value;
+
+      const profit = income - cost;
+
+      const planHTML = `
+      <h2>📌 Жоспар: ${biz}</h2>
+      <p><strong>Сипаттама:</strong> ${desc}</p>
+      <p><strong>Бастапқы инвестиция:</strong> ${inv} тг</p>
+      <p><strong>Ай сайынғы шығын:</strong> ${cost} тг</p>
+      <p><strong>Ай сайынғы табыс:</strong> ${income} тг</p>
+      <p><strong>Таза пайда:</strong> ${profit} тг</p>
+      <p><strong>Сату арнасы:</strong> ${chan}</p>
+      <p><strong>Тәуекелдер:</strong> ${risk}</p>
+      `;
+
+      document.getElementById('result').innerHTML = planHTML;
+      document.getElementById('downloadBtn').style.display = 'inline-block';
+    }
+
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const biz = document.getElementById('biz_type').value;
+      const inv = document.getElementById('investment').value;
+      const cost = document.getElementById('cost').value;
+      const income = document.getElementById('income').value;
+      const desc = document.getElementById('description').value;
+      const chan = document.getElementById('channel').value;
+      const risk = document.getElementById('risk').value;
+
+      const profit = income - cost;
+
+      let y = 10;
+      doc.setFontSize(14);
+      doc.text(`Бизнес-жоспар: ${biz}`, 10, y); y += 10;
+      doc.setFontSize(12);
+      doc.text(`Сипаттама: ${desc}`, 10, y); y += 10;
+      doc.text(`Инвестиция: ${inv} тг`, 10, y); y += 10;
+      doc.text(`Шығын: ${cost} тг`, 10, y); y += 10;
+      doc.text(`Табыс: ${income} тг`, 10, y); y += 10;
+      doc.text(`Таза пайда: ${profit} тг`, 10, y); y += 10;
+      doc.text(`Сату арнасы: ${chan}`, 10, y); y += 10;
+      doc.text(`Тәуекелдер: ${risk}`, 10, y);
+
+      doc.save("biznes-zhospar.pdf");
+    }
+  </script>
+</body>
+</html>

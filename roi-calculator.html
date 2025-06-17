@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>🧮 ROI калькуляторы</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .form-section {
+      margin-top: 2rem;
+    }
+    input {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+    }
+    .result {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <button onclick="switchLanguage()">KZ / RU</button>
+  <h1>🧮 ROI (инвестицияны ақтау) калькуляторы</h1>
+
+  <div class="form-section">
+    <label>Бастапқы инвестиция (тг):</label>
+    <input type="number" id="investment" placeholder="Мысалы: 1000000">
+
+    <label>Ай сайынғы табыс (тг):</label>
+    <input type="number" id="income" placeholder="Мысалы: 400000">
+
+    <label>Ай сайынғы шығын (тг):</label>
+    <input type="number" id="expense" placeholder="Мысалы: 150000">
+
+    <button onclick="calculateROI()">📊 Есептеу</button>
+  </div>
+
+  <div class="result" id="roiResult"></div>
+
+  <script>
+    function calculateROI() {
+      const investment = parseFloat(document.getElementById('investment').value);
+      const income = parseFloat(document.getElementById('income').value);
+      const expense = parseFloat(document.getElementById('expense').value);
+
+      if (isNaN(investment) || isNaN(income) || isNaN(expense)) {
+        document.getElementById('roiResult').innerHTML = '<p>Барлық деректерді дұрыс енгізіңіз</p>';
+        return;
+      }
+
+      const profit = income - expense;
+      const roi = ((profit * 12) / investment * 100).toFixed(1);
+      const monthsToReturn = (investment / profit).toFixed(1);
+
+      let html = `<h2>Нәтиже:</h2>`;
+      html += `<p><strong>Ай сайынғы таза пайда:</strong> ${profit.toLocaleString()} тг</p>`;
+      html += `<p><strong>ROI:</strong> ${roi}%</p>`;
+      html += `<p><strong>Ақталу мерзімі:</strong> ${monthsToReturn} ай</p>`;
+
+      document.getElementById('roiResult').innerHTML = html;
+    }
+  </script>
+</body>
+</html>
